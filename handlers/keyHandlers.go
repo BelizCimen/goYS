@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"errors"
+	"goYS/cache"
 	"goYS/model"
 	"io/ioutil"
 	"net/http"
@@ -28,15 +29,16 @@ func bodyToKey(r *http.Request, k *model.Key) error {
 	return json.Unmarshal(bd, k)
 }
 func keysGetAll(w http.ResponseWriter, r *http.Request) {
+	if cache.Serve(w, r) {
+		return
+	}
 	keys, err := model.All()
 	if err != nil {
 		postError(w, http.StatusInternalServerError)
 		return
 	}
-	if r.Method == http.MethodHead {
-		postBodyResponse(w, http.StatusOK, jsonResponse{})
-	}
-	postBodyResponse(w, http.StatusOK, jsonResponse{"keys ": keys})
+	cw := cache.NewWriter(w, r)
+	postBodyResponse(cw, http.StatusOK, jsonResponse{"keys ": keys})
 	return
 }
 
@@ -57,11 +59,15 @@ func keysPostOne(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
+	cache.Drop("/keys")
 	w.Header().Set("Location", "/keys/"+k.ID.Hex())
 	w.WriteHeader(http.StatusCreated)
 }
 
 func keysGetOne(w http.ResponseWriter, r *http.Request, id bson.ObjectId) {
+	if cache.Serve(w, r) {
+		return
+	}
 	k, err := model.One(id)
 	if err != nil {
 		if err == storm.ErrNotFound {
@@ -77,26 +83,7 @@ func keysGetOne(w http.ResponseWriter, r *http.Request, id bson.ObjectId) {
 	postBodyResponse(w, http.StatusOK, jsonResponse{"key": k})
 }
 
-func keysPutOne(w http.ResponseWriter, r *http.Request, id bson.ObjectId) {
-	k := new(model.Key)
-	err := bodyToKey(r, k)
-	if err != nil {
-		postError(w, http.StatusBadRequest)
-		return
-	}
-	k.ID = id
-	err = k.Save()
-	if err != nil {
-		if err == model.ErrRecordInvalid {
-			postError(w, http.StatusBadRequest)
-		} else {
-			postError(w, http.StatusInternalServerError)
-		}
-		return
-	}
-	postBodyResponse(w, http.StatusOK, jsonResponse{"key": k})
-}
-func keysDeleteOne(w http.ResponseWriter, _ *http.Request, id bson.ObjectId) {
+func keysDeleteOne(w http.ResponseWriter, r *http.Request, id bson.ObjectId) {
 	err := model.Delete(id)
 	if err != nil {
 		if err == storm.ErrNotFound {
@@ -106,5 +93,7 @@ func keysDeleteOne(w http.ResponseWriter, _ *http.Request, id bson.ObjectId) {
 		postError(w, http.StatusInternalServerError)
 		return
 	}
+	cache.Drop("/keys")
+	cache.Drop(cache.MakeResource(r))
 	w.WriteHeader(http.StatusOK)
 }

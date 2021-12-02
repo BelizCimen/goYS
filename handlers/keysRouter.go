@@ -37,8 +37,8 @@ func KeysRouter(w http.ResponseWriter, r *http.Request) {
 	case http.MethodGet:
 		keysGetOne(w, r, id)
 		return
-	case http.MethodPut:
-		keysPutOne(w, r, id)
+	case http.MethodPost:
+		keysPostOne(w, r)
 		return
 	case http.MethodDelete:
 		keysDeleteOne(w, r, id)
