@@ -11,11 +11,14 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-func bodyToUser(r *http.Request, k *model.Key) error {
+func bodyToKey(r *http.Request, k *model.Key) error {
+	if r == nil {
+		return errors.New("REQUEST REQUIRED")
+	}
 	if r.Body == nil {
 		return errors.New("REQUEST BODY EMPTY")
 	}
-	if r.Body == nil {
+	if k == nil {
 		return errors.New("KEY EMPTY")
 	}
 	bd, err := ioutil.ReadAll(r.Body)
@@ -39,7 +42,7 @@ func keysGetAll(w http.ResponseWriter, r *http.Request) {
 
 func keysPostOne(w http.ResponseWriter, r *http.Request) {
 	k := new(model.Key)
-	err := bodyToUser(r, k)
+	err := bodyToKey(r, k)
 	if err != nil {
 		postError(w, http.StatusBadRequest)
 		return
@@ -76,7 +79,7 @@ func keysGetOne(w http.ResponseWriter, r *http.Request, id bson.ObjectId) {
 
 func keysPutOne(w http.ResponseWriter, r *http.Request, id bson.ObjectId) {
 	k := new(model.Key)
-	err := bodyToUser(r, k)
+	err := bodyToKey(r, k)
 	if err != nil {
 		postError(w, http.StatusBadRequest)
 		return
