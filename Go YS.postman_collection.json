@@ -1,0 +1,243 @@
+{
+	"info": {
+		"_postman_id": "a26e86c2-065d-4919-8ad4-71238a69acd0",
+		"name": "Go YS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Root",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = pm.response.json();\r",
+							"pm.environment.set(\"access_token\", response.access_token)\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "Basic {{client_secret}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic  {{client_secret}}",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "raccounts@reidin.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "InsightNew+2022",
+							"type": "text"
+						},
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "device_id",
+							"value": "3482479428",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:11111",
+					"host": [
+						"localhost"
+					],
+					"port": "11111"
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Key List",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:11111/users",
+					"host": [
+						"localhost"
+					],
+					"port": "11111",
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Key",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:11111/users/61a544ca8f337cb97d8f3829",
+					"host": [
+						"localhost"
+					],
+					"port": "11111",
+					"path": [
+						"users",
+						"61a544ca8f337cb97d8f3829"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Key",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:11111/keys/61a544ca8f337cb97d8f3829",
+					"host": [
+						"localhost"
+					],
+					"port": "11111",
+					"path": [
+						"keys",
+						"61a544ca8f337cb97d8f3829"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Key (error)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/users/:id",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"users",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "61a51c238f337ca6a0ad0318"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Set Key",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				},
+				"followOriginalHttpMethod": true,
+				"followAuthorizationHeader": false,
+				"removeRefererHeaderOnRedirect": false
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\" : \"Key1\"\n    \"role\" : \"Value1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/users",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Set Key(error)",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				},
+				"followOriginalHttpMethod": true,
+				"followAuthorizationHeader": false,
+				"removeRefererHeaderOnRedirect": false
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"role\" : \"developer\"\n}"
+				},
+				"url": {
+					"raw": "localhost:11111/users",
+					"host": [
+						"localhost"
+					],
+					"port": "11111",
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
