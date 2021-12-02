@@ -12,10 +12,13 @@ import (
 )
 
 func bodyToKey(r *http.Request, k *model.Key) error {
+	if r == nil {
+		return errors.New("REQUEST REQUIRED")
+	}
 	if r.Body == nil {
 		return errors.New("REQUEST BODY EMPTY")
 	}
-	if r.Body == nil {
+	if k == nil {
 		return errors.New("KEY EMPTY")
 	}
 	bd, err := ioutil.ReadAll(r.Body)
